@@ -22,12 +22,13 @@
 
 #include <cstdio>
 
-// TODO(student): parallelise the body of this function.
-// Starter implementation is a serial fallback so the file builds on day 2.
+#include <omp.h>
+
 double integrate_parallel(double a, double b, long n)
 {
     const double h = (b - a) / static_cast<double>(n);
     double sum = 0.5 * (f(a) + f(b));
+#pragma omp parallel for schedule(guided) reduction(+:sum) default(none) shared(a, h, n)
     for (long i = 1; i < n; ++i) {
         const double x = a + (static_cast<double>(i) * h);
         sum += f(x);
